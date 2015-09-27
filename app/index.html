@@ -1,0 +1,101 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/spinkit/css/spinkit.css" />
+
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body ng-app="musicPlayerApp">
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!-- Add your site or application content here -->
+
+    <div ng-show="showLoading" class="vertical-center loadingContainer">
+        <div class="sk-spinner sk-spinner-fading-circle">
+            <div class="sk-circle1 sk-circle"></div>
+            <div class="sk-circle2 sk-circle"></div>
+            <div class="sk-circle3 sk-circle"></div>
+            <div class="sk-circle4 sk-circle"></div>
+            <div class="sk-circle5 sk-circle"></div>
+            <div class="sk-circle6 sk-circle"></div>
+            <div class="sk-circle7 sk-circle"></div>
+            <div class="sk-circle8 sk-circle"></div>
+            <div class="sk-circle9 sk-circle"></div>
+            <div class="sk-circle10 sk-circle"></div>
+            <div class="sk-circle11 sk-circle"></div>
+            <div class="sk-circle12 sk-circle"></div>
+        </div>
+    </div>
+
+    <a ng-click="openDebugTool()" class="btn btn-primary" tooltip="调试" style="position: absolute; right:10px">
+        <i class="glyphicon glyphicon-cog"></i> <span> 版本: {{version}}</span>
+    </a>
+    
+    <div class="container">
+      <div ng-view=""></div>
+    </div>
+    
+    
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/videogular/videogular.js"></script>
+    <script src="bower_components/videogular-controls/vg-controls.js"></script>
+    <script src="bower_components/ng-lodash/build/ng-lodash.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/angular-moment/angular-moment.js"></script>
+    <script src="bower_components/async/dist/async.min.js"></script>
+    
+
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/services/authservie.js"></script>
+    <script src="scripts/services/playerFacadeServie.js"></script>
+    <script src="scripts/services/utilservice.js"></script>
+    <script src="scripts/services/dbservice.js"></script>
+    <script src="scripts/decorators/logdecorator.js"></script>
+    <script src="scripts/services/backendservice.js"></script>
+    <script src="scripts/services/configservice.js"></script>
+    <script src="scripts/services/logservice.js"></script>
+    <script src="scripts/controllers/player.js"></script>
+    <script src="scripts/filters/durationfilter.js"></script>
+    <script src="scripts/services/syncservice.js"></script>
+    <script src="scripts/services/model/trackModelService.js"></script>
+    <script src="scripts/services/model/programModelService.js"></script>
+    <!-- endbuild -->
+    <script type="text/javaScript">
+    var ua = navigator.userAgent.toLocaleLowerCase();
+    console.log('uasds:', ua);
+    if (ua.indexOf('music') >= 0) {
+        var gulp = require('gulp');
+        gulp.task('reload', function () {
+        if (location) location.reload();
+        });
+        gulp.watch(['./scripts/**/*', './views/**/*'], ['reload']);
+    };
+    </script>
+  </body>
+</html>

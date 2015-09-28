@@ -61,7 +61,8 @@ gulp.task('nw', function () {
                 archive.on('error', function(err) {
                     callback(err);
                 });
-                archive.append(fs.createReadStream(srcAppFile), {name: path.basename(srcAppFile)});
+                archive.directory(srcAppFile, path.basename(srcAppFile));
+                // archive.append(fs.createReadStream(srcAppFile), {name: path.basename(srcAppFile)});
                 archive.pipe(destZipAppFileStream);
                 archive.finalize();
             }, 

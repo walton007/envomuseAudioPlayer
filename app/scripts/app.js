@@ -31,8 +31,8 @@ angular
         redirectTo: '/player'
       });
   })
-  .run(['$rootScope', '$interval', '$log', 'configService', 'syncService', 'backendService',
-   function($rootScope, $interval, $log, configService, syncService, backendService) {
+  .run(['$rootScope', '$interval', '$log', 'configService', 'syncService', 'backendService', 'selfCheckService',
+   function($rootScope, $interval, $log, configService, syncService, backendService, selfCheckService) {
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
       
     });
@@ -43,10 +43,14 @@ angular
     //   $log.log(config);
     // });
 
-    syncService.checkServerProgram()
-    .then(function() {
-      syncService.sync();
-    });
+    // syncService.checkServerProgram()
+    // .then(function() {
+    //   syncService.sync();
+    // });
+
+    //
+    $log.info(process.env.PWD);
+    selfCheckService.doSelfCheck();
 
   }]);
 

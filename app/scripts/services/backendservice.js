@@ -13,7 +13,7 @@ angular.module('musicPlayerApp')
     // Service logic
     // ...
 
-    var BackendUrl = 'http://localhost:5000/terminal/';
+    var BackendUrl = 'http://localhost:3000/terminal/';
 
     // may consider move track manage to another service
     var fs = require('fs-extra'), 
@@ -26,10 +26,6 @@ angular.module('musicPlayerApp')
 
     // Public API here
     return {
-      someMethod: function () {
-        return meaningOfLife;
-      },
-
       login: function() {
         return $http.post(BackendUrl+'login', {
           mac: 'abc',

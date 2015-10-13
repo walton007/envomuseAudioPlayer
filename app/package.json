@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "fs-extra": "^0.20.1",
+    "getmac": "^1.0.7",
     "gulp": "^3.9.0",
     "jsonfile": "^2.2.1",
     "nedb": "^1.1.2",

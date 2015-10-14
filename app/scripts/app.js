@@ -54,6 +54,7 @@ angular
     selfCheckService.doSelfCheck()
     .then(function () {
       syncService.startPeriodSync();
+      syncService.startPeriodHeartBeat();
     }, function () {
 
     });

@@ -18,6 +18,11 @@ angular.module('musicPlayerApp')
     var random = Math.random();
     random = random < 0.5 ? 0.5 : random;
     var periodCheckInterval = 6*random*60*60*1000; //6h
+    random = Math.random();
+    var periodHeartBeatInterval = 0.5*(1+random)*60*60*1000; //0.5h
+
+    $log.info('<sync parameter> periodCheckInterval:', periodCheckInterval/(60*1000) );
+    $log.info('<sync parameter> periodCheckInterval:', periodHeartBeatInterval/(60*1000));
 
     // Public API here
     return {
@@ -185,8 +190,13 @@ angular.module('musicPlayerApp')
 
       //control logic
       startPeriodSync: function () {
-        this.sync()
+        this.sync();
         $interval(this.sync , periodCheckInterval);
+      },
+      startPeriodHeartBeat: function () {
+        $log.info('startPeriodHeartBeat');
+        backendService.postHeartBeat();
+        $interval(backendService.postHeartBeat , periodHeartBeatInterval);
       }
     };
   }]);

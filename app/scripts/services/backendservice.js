@@ -26,13 +26,6 @@ angular.module('musicPlayerApp')
 
     // Public API here
     return {
-      login: function() {
-        return $http.post(BackendUrl+'login', {
-          mac: 'abc',
-          uuid: 'wbc'
-        });
-      },
-
       getConfig: function() {
         return $http.get(BackendUrl+'config');
       },
@@ -88,10 +81,8 @@ angular.module('musicPlayerApp')
       },
 
       postHeartBeat: function() {
-        return $http.post(BackendUrl+'login', {
-          mac: 'abc',
-          uuid: 'wbc'
-        });
+        $log.info('postHeartBeat');
+        return $http.post(BackendUrl+'heartbeat');
       }
      };
   }]);

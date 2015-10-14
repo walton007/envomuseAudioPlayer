@@ -8,7 +8,11 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('selfCheckService', ['$rootScope', '$q', '$http', 'backendService', function ($rootScope, $q, $http, backendService) {
+  .factory('selfCheckService', ['$rootScope', '$log', '$q', '$http', 'backendService', 'APPSTATUS', function ($rootScope, $log, $q, $http, backendService, APPSTATUS) {
+    
+    var fs = require('fs-extra'), 
+        path = require('path'),
+        randomstring = require("randomstring");
     // Service logic
     var license = '',
     mac = 123,
@@ -17,20 +21,28 @@ angular.module('musicPlayerApp')
     // Public API here
     return {
       doSelfCheck: function() {
+        $log.info('doSelfCheck');
+
         var deferred = $q.defer();
         var self = this;
+        $rootScope.appStatus = APPSTATUS.SELFCHECKING;
 
         async.series([
           self._checkVersion,
           self._checkMac,
           self._checkLicense,
+          self._checkPreStoreAsset,
           self._checkNetwork,
           ],
           function(err, results) {
             if (err) {
+              $log.error('doSelfCheck failed error:', err);
+              $rootScope.appStatus = APPSTATUS.SELFCHECKING_FAILED;
+              $rootScope.failureReason = err;
               deferred.reject(err);
               return;
             }
+            $rootScope.appStatus = APPSTATUS.IDLE;
             deferred.resolve();
           });
 
@@ -38,12 +50,14 @@ angular.module('musicPlayerApp')
       },
 
       _checkVersion: function(callback) {
+        $log.info('_checkVersion');
         var pjson = require('./package.json');
         version = $rootScope.version = pjson.version;
         callback(null);
       },
 
       _checkMac: function (callback) {
+        $log.info('_checkMac');
         require('getmac').getMac(function(err,macAddress){
             if (err)  {
               return callback(err);
@@ -54,9 +68,7 @@ angular.module('musicPlayerApp')
       },
 
       _checkLicense: function (callback) {
-        var fs = require('fs-extra'), 
-        path = require('path'),
-        randomstring = require("randomstring");
+        $log.info('_checkLicense');
         var licenseFile = path.join(process.env.PWD, 'license.dat');
         if (!fs.existsSync(licenseFile)) {
           callback('No LicenseFile');
@@ -71,7 +83,30 @@ angular.module('musicPlayerApp')
         }
       },
 
+      _checkPreStoreAsset: function (callback) {
+        $log.info('_checkPreStoreAsset');
+        var settingJsonFile = './setting.json';
+
+        var settingJson = require(settingJsonFile);
+        $log.info('settingJson:', settingJson);
+        if (settingJson.preserveAssetProcessed) {
+          return callback(null);
+        }
+        var trackCacheDir = path.join(process.env.PWD, 'trackCache');
+        if (fs.existsSync(trackCacheDir)) {
+          $log.info('consume cache track to local db');
+          
+        }
+        //Mark preserveAssetProcessed to true
+        settingJson.preserveAssetProcessed = 1;
+        fs.writeJSONSync(settingJsonFile, settingJson);
+        callback(null);
+
+      },
+
       _checkNetwork: function(callback) {
+        $log.info('_checkNetwork');
+
         $http.defaults.headers.common.envomuse = [version, license, mac].join('=');
         backendService.getConfig()
         .then(function () {

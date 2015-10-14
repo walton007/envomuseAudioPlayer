@@ -21,6 +21,20 @@ angular
     "com.2fdevs.videogular",
     "com.2fdevs.videogular.plugins.controls"
   ])
+  .constant("APPSTATUS", {
+        "SELFCHECKING": "Self Checking",
+        "SELFCHECKING_FAILED": "Self Checking Failed",
+        "TRY_SYNC_PROGRAM": "Try Syncing Program",
+        "SYNC_PROGRAM": "Syncing Program",
+        "SYNC_TRACK": "Syncing Track",
+        "SYNC_FAILED": "Sync failed",
+        "IDLE": "IDLE"
+      })
+  .constant("PLAYERSTATUS", {
+        "LOADING": "Loading Track",
+        "LOCAL_BACKUP_TRACK": "Play backup track",
+        "ONLINE_TRACK": "Play online track"
+      })
   .config(function ($routeProvider) {
     $routeProvider
       .when('/player', {
@@ -31,26 +45,18 @@ angular
         redirectTo: '/player'
       });
   })
-  .run(['$rootScope', '$interval', '$log', 'configService', 'syncService', 'backendService', 'selfCheckService',
-   function($rootScope, $interval, $log, configService, syncService, backendService, selfCheckService) {
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+  .run(['$rootScope', '$log', 'syncService', 'backendService', 'selfCheckService',
+   function($rootScope, $log, syncService, backendService, selfCheckService) {
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
       
     });
-    
-    //Start Timer
-    // configService.getConfig().
-    // then(function(config) {
-    //   $log.log(config);
-    // });
 
-    // syncService.checkServerProgram()
-    // .then(function() {
-    //   syncService.sync();
-    // });
+    selfCheckService.doSelfCheck()
+    .then(function () {
+      syncService.startPeriodSync();
+    }, function () {
 
-    //
-    $log.info(process.env.PWD);
-    selfCheckService.doSelfCheck();
+    });
 
   }]);
 

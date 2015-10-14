@@ -8,13 +8,16 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('syncService', ['$log', '$q', 'lodash', 'backendService', 'programModelService','trackModelService'
-    , function ($log, $q, _, backendService, programModelService, trackModelService) {
+  .factory('syncService', ['$log', '$q', '$rootScope', '$interval', 'lodash', 'backendService', 'programModelService','trackModelService', 'APPSTATUS'
+    , function ($log, $q, $rootScope, $interval, _, backendService, programModelService, trackModelService, APPSTATUS) {
     // Service logic
     // ...
 
     var missingPrograms = [];
     var isSyncingProgram = false;
+    var random = Math.random();
+    random = random < 0.5 ? 0.5 : random;
+    var periodCheckInterval = 6*random*60*60*1000; //6h
 
     // Public API here
     return {
@@ -52,11 +55,13 @@ angular.module('musicPlayerApp')
       syncProgram: function () {
         $log.info('syncProgram', missingPrograms);
 
+        var deferred = $q.defer();
+
         if (isSyncingProgram) {
-          return ;
+          deferred.resolve();
+          return deferred.promise;
         }
 
-        var deferred = $q.defer();
         if (missingPrograms.length) {
           async.whilst(
             function () { return missingPrograms.length > 0; },
@@ -151,14 +156,37 @@ angular.module('musicPlayerApp')
 
       sync: function () {
         $log.info('sync');
-        var that = this;
-        this.syncProgram()
-        .then(function () {
-          return that.syncTrack();
-        })
-        .then(function () {
-          $log.info('sync done.');
+        var self = this;
+        if ($rootScope.appStatus !== APPSTATUS.IDLE && $rootScope.appStatus !== APPSTATUS.SYNC_FAILED) {
+          return;
+        };
+        $rootScope.appStatus = APPSTATUS.TRY_SYNC_PROGRAM;
+        self.checkServerProgram()
+        .then(function() {
+          $rootScope.appStatus = APPSTATUS.SYNC_PROGRAM;
+          self.syncProgram()
+          .then(function () {
+            $rootScope.appStatus = APPSTATUS.SYNC_TRACK;
+            return self.syncTrack();
+          })
+          .then(function () {
+            $rootScope.appStatus = APPSTATUS.IDLE;
+            $log.info('sync done.');
+          })
+          .catch(function (err) {
+            $log.error('sync failed');
+            $rootScope.appStatus = SYNC_FAILED;
+          });
+        }, function () {
+          $rootScope.appStatus = SYNC_FAILED;
         });
+
+      },
+
+      //control logic
+      startPeriodSync: function () {
+        this.sync()
+        $interval(this.sync , periodCheckInterval);
       }
     };
   }]);

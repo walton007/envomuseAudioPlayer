@@ -81,9 +81,11 @@ angular.module('musicPlayerApp')
           }],
           function (err) {
             if (err) {
-              alert(err);
+              // alert(err);
               return deferred.reject(err);
             }
+            // cache today's playlist
+            todayTrackListCache = retPlaylist;
             deferred.resolve(retPlaylist);
           });
 

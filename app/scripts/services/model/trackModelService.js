@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc service
- * @name musicPlayerApp.configService
+ * @name musicPlayerApp.trackModelService
  * @description
- * # configService
+ * # trackModelService
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
@@ -63,24 +63,24 @@ angular.module('musicPlayerApp')
         return dbservice.insert(trackStore, trackInfo, callback);
       },
 
-      getTodayTracks: function () {
-        var deferred = $q.defer();
-        trackStore.findOne({_id: trackId}, function(err, doc) {
-          if (angular.isFunction(callback)) {
-            callback(err, doc);
-          }
-          if (err) {
-            $log.error('failed to find track');
-            deferred.reject();
-            return;
-          }
-          if (doc) {
-            deferred.resolve(doc);
-            return;
-          };
-        });
-        return deferred.promise;
-      },
+      // getTodayTracks: function () {
+      //   var deferred = $q.defer();
+      //   trackStore.findOne({_id: trackId}, function(err, doc) {
+      //     if (angular.isFunction(callback)) {
+      //       callback(err, doc);
+      //     }
+      //     if (err) {
+      //       $log.error('failed to find track');
+      //       deferred.reject();
+      //       return;
+      //     }
+      //     if (doc) {
+      //       deferred.resolve(doc);
+      //       return;
+      //     };
+      //   });
+      //   return deferred.promise;
+      // },
 
       clear: function (callback) {
         $log.info('clear programStore');

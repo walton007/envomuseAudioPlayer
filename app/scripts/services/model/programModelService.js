@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc service
- * @name musicPlayerApp.configService
+ * @name musicPlayerApp.programModelService
  * @description
- * # configService
+ * # programModelService
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')

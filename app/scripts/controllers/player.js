@@ -8,9 +8,9 @@
  * Controller of the musicPlayerApp
  */
 angular.module('musicPlayerApp')
-  .controller('PlayerCtrl', ['$scope', '$routeParams', '$sce', '$log', '$timeout', 'playerFacadeServie', 'dbservice',
-    'trackModelService',
-  	function ($scope, $routeParams, $sce, $log, $timeout, playerFacadeServie, dbservice, trackModelService) {
+  .controller('PlayerCtrl', ['$rootScope', '$scope', '$routeParams', '$sce', '$log', '$timeout', 'playerFacadeServie', 'dbservice',
+    'trackModelService', 'APPSTATUS',
+  	function ($rootScope, $scope, $routeParams, $sce, $log, $timeout, playerFacadeServie, dbservice, trackModelService, APPSTATUS) {
   		var controller = this;
 
       $scope.clearAll = function () {
@@ -41,7 +41,8 @@ angular.module('musicPlayerApp')
             $scope.scheduleTrack();
           }
         }, function (err) {
-          alert('Failed to get calc Track');
+          // alert('Failed to get calc Track');
+          $log.warn('Failed to get calc Track');
         });
       };
 
@@ -69,6 +70,13 @@ angular.module('musicPlayerApp')
           controller.isCompleted = true;
           $scope.tryPlayTrackInTime();
       };
+
+      $rootScope.$watch('appStatus', function() {
+        if ($rootScope.appStatus === APPSTATUS.IDLE) {
+          $log.info('$rootScope.appStatus change to idle');
+          $scope.tryPlayTrackInTime();
+        }
+      });
 
       controller.config = {
           // preload: "none",

@@ -13,7 +13,7 @@ angular.module('musicPlayerApp')
     , function($q, $log, _, programModelService, trackModelService) {
     //
     var todayTrackListCache = {
-      data: null,
+      data: null, // playlist
       date: null
     };
 
@@ -30,6 +30,7 @@ angular.module('musicPlayerApp')
       },
 
       getTodayTrackList: function () {
+        $log.info('getTodayTrackList');
         // just return the first track found in localdb
         var retPlaylist = null;
         var deferred = $q.defer();
@@ -43,7 +44,7 @@ angular.module('musicPlayerApp')
           todayTrackListCache.data = null; 
         }
         if (todayTrackListCache.data) {
-          deferred.resolve(todayTrackListCache);
+          deferred.resolve(todayTrackListCache.data);
           return deferred.promise;
         }
 
@@ -103,6 +104,8 @@ angular.module('musicPlayerApp')
       },
 
       getCalcTrack: function () {
+        $log.info('getCalcTrack');
+
         var deferred = $q.defer(), self = this;
         this.getTodayTrackList()
         .then(function (todayTrackList) {
@@ -120,6 +123,8 @@ angular.module('musicPlayerApp')
       },
 
       getNextTrack: function () {
+        $log.info('getNextTrack');
+        
         var deferred = $q.defer(), self = this;
         this.getTodayTrackList()
         .then(function (todayTrackList) {
@@ -127,7 +132,10 @@ angular.module('musicPlayerApp')
           var now = self.getMsTimeInCurDay(moment()),
           retTrack = _.find(todayTrackList, function (track) {
             return track.exactPlayTime > now;
-          })
+          });
+          if (retTrack === null) {
+            alert('mlgb');
+          }
           deferred.resolve(retTrack);
         }, function (err) {
           $log.error('getNextTrack:', err);

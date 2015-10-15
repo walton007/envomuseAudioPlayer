@@ -39,7 +39,7 @@ angular.module('musicPlayerApp')
 
         return $http.get(BackendUrl+'playlists')
         .then(function (resp) {
-          $log.info('backend resp:', resp);
+          $log.info('getPrograms backend response code:', resp.status);
           var playlists = resp.data;
           return playlists;
         });

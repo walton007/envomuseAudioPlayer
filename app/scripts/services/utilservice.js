@@ -72,12 +72,29 @@ angular.module('musicPlayerApp')
           if (v < 10) v = '0'+v;
           return ''+v;
         });
-        $log.info('hours, minutes, seconds: ', hours, minutes, seconds);
-        $log.info('timeArr: ', timeArr);
+
         var retStr = timeArr.join(':');
         $log.info('ExactPlayTime- ', exactPlayTime, ' translate to:', retStr);
 
         return retStr;
+      },
+
+      dumpPlaylist: function (playlist) {
+        $log.info('dumpPlaylist:', playlist);
+        var self = this;
+        var filename = playlist.date.format("dddd, MMMM Do YYYY") + '-PL.log';
+        var fs = require('fs');
+        var stream = fs.createWriteStream(filename);
+        stream.once('open', function(fd) {
+          stream.write("TimeMs  ExactPlayTime   Track    Name   \n");
+          playlist.data.forEach(function (track) {
+            var lineStr = [track.exactPlayTime, track.exactPlayTimeself.translateExactPlayTime(track.exactPlayTime), track.name, track.track, '\n'].join('  ');
+            stream.write(lineStr);
+          });
+          
+          stream.end();
+        });
+
       }
     };
   }]);

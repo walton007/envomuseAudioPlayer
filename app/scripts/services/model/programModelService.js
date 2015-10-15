@@ -54,8 +54,8 @@ angular.module('musicPlayerApp')
       },
 
       queryPrograms: function (beginDay, futureDay, callback) {
-        console.log(beginDay);
-        console.log(futureDay);
+        $log.info('queryPrograms:', beginDay.format("dddd, MMMM Do YYYY"));
+
         var deferred = $q.defer();
         programStore.find({
           $or: [ {

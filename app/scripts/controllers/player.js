@@ -16,7 +16,17 @@ angular.module('musicPlayerApp')
 
       $scope.clearAll = function () {
         dbservice.clearAll();
-      }
+      };
+
+      $scope.printTodayPlaylist = function () {
+        $log.info('printTodayPlaylist');
+        playerFacadeServie.getTodayTrackList()
+        .then(function (todayTrackList) {
+          utilService.dumpPlaylist(todayTrackList);
+        }, function (err) {
+          alert('getTodayTrackList error');
+        });
+      };
 
       $scope.scheduleTrack = function () {
         $log.info('scheduleTrack');
@@ -24,11 +34,16 @@ angular.module('musicPlayerApp')
         .then(function (track) {
           if (track) {
             var elapseMs = Number(track.exactPlayTime) - playerFacadeServie.getMsTimeInCurDay(new Date());
+            $log.info('schedule elapseMs is: ', elapseMs);
             $timeout(function () {
               $scope.setVideo(track);
             }, elapseMs);
-          };
+          } else {
+            $log.error('getNextTrack track is null');
+          }
 
+        }, function (err) {
+          $log.error('getNextTrack error:', err);
         });
 
       }
@@ -49,6 +64,10 @@ angular.module('musicPlayerApp')
       };
 
       $scope.setVideo = function(track) {
+        if ( $scope.track === track) {
+          $log.warn('setVideo same track return');
+          return;
+        }
         $log.info('setVideo', track.name, track.track, utilService.translateExactPlayTime(track.exactPlayTime));
         var trackFileUrl = 'file://'+track.trackFilePath;
         $scope.track = track;
@@ -70,6 +89,8 @@ angular.module('musicPlayerApp')
 
       controller.onCompleteVideo = function() {
           $log.info('onCompleteVideo');
+          $scope.track = null;
+
           controller.isCompleted = true;
           $scope.tryPlayTrackInTime();
       };
@@ -77,7 +98,9 @@ angular.module('musicPlayerApp')
       $rootScope.$watch('appStatus', function() {
         if ($rootScope.appStatus === APPSTATUS.IDLE) {
           $log.info('$rootScope.appStatus change to idle');
-          $scope.tryPlayTrackInTime();
+          if ($scope.track === null ) {
+            $scope.tryPlayTrackInTime();
+          }
         }
       });
 

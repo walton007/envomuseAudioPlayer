@@ -9,8 +9,9 @@
  */
 angular.module('musicPlayerApp')
   .controller('PlayerCtrl', ['$rootScope', '$scope', '$routeParams', '$sce', '$log', '$timeout', 'playerFacadeServie', 'dbservice',
-    'trackModelService', 'APPSTATUS',
-  	function ($rootScope, $scope, $routeParams, $sce, $log, $timeout, playerFacadeServie, dbservice, trackModelService, APPSTATUS) {
+    'trackModelService', 'APPSTATUS', 'utilService',
+  	function ($rootScope, $scope, $routeParams, $sce, $log, $timeout, playerFacadeServie, dbservice, trackModelService,
+     APPSTATUS, utilService) {
   		var controller = this;
 
       $scope.clearAll = function () {
@@ -18,6 +19,7 @@ angular.module('musicPlayerApp')
       }
 
       $scope.scheduleTrack = function () {
+        $log.info('scheduleTrack');
         playerFacadeServie.getNextTrack()
         .then(function (track) {
           if (track) {
@@ -32,7 +34,7 @@ angular.module('musicPlayerApp')
       }
 
       $scope.tryPlayTrackInTime = function() {
-        $log.info('tryPlayTrackInTime 2');
+        $log.info('tryPlayTrackInTime');
         playerFacadeServie.getCalcTrack()
         .then(function (track) {
           if (track) {
@@ -47,7 +49,7 @@ angular.module('musicPlayerApp')
       };
 
       $scope.setVideo = function(track) {
-        $log.info('setVideo', track);
+        $log.info('setVideo', track.name, track.track, utilService.translateExactPlayTime(track.exactPlayTime));
         var trackFileUrl = 'file://'+track.trackFilePath;
         $scope.track = track;
         $scope.trackSource = [{src: $sce.trustAsResourceUrl(trackFileUrl), type: 'audio/mpeg'}];
@@ -67,6 +69,7 @@ angular.module('musicPlayerApp')
       };
 
       controller.onCompleteVideo = function() {
+          $log.info('onCompleteVideo');
           controller.isCompleted = true;
           $scope.tryPlayTrackInTime();
       };

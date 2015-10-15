@@ -8,7 +8,7 @@
  * Factory in the musicPlayerApp.
  */
 angular.module('musicPlayerApp')
-  .factory('utilService', ['$rootScope', function ($rootScope) {
+  .factory('utilService', ['$log', '$rootScope', function ($log, $rootScope) {
     // Service logic
     // ...
 
@@ -62,6 +62,22 @@ angular.module('musicPlayerApp')
         } else {
           $rootScope.showLoading = false;
         }
+      },
+
+      translateExactPlayTime: function (exactPlayTime) {
+        var seconds = Math.floor(exactPlayTime/1000) % 60;
+        var minutes = Math.floor(exactPlayTime/(60*1000) ) % 60;
+        var hours = Math.floor( exactPlayTime/(60 * 60*1000) );
+        var timeArr = [hours, minutes, seconds].map(function (v) {
+          if (v < 10) v = '0'+v;
+          return ''+v;
+        });
+        $log.info('hours, minutes, seconds: ', hours, minutes, seconds);
+        $log.info('timeArr: ', timeArr);
+        var retStr = timeArr.join(':');
+        $log.info('ExactPlayTime- ', exactPlayTime, ' translate to:', retStr);
+
+        return retStr;
       }
     };
   }]);

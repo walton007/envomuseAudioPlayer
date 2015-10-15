@@ -12,8 +12,6 @@ angular.module('musicPlayerApp')
     // Service logic
     // ...
 
-    var pjson = require('./package.json');
-    $rootScope.version = pjson.version;
     $rootScope.openDebugTool = function () {
       var win = require('nw.gui').Window.get();
       return win.showDevTools();

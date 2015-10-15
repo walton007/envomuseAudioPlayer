@@ -12,7 +12,10 @@ angular.module('musicPlayerApp')
   .factory('playerFacadeServie', ['$q', '$log', 'lodash', 'programModelService', 'trackModelService'
     , function($q, $log, _, programModelService, trackModelService) {
     //
-    var todayTrackListCache = null;
+    var todayTrackListCache = {
+      data: null,
+      date: null
+    };
 
     // Public API here
     return {
@@ -33,7 +36,13 @@ angular.module('musicPlayerApp')
         var todayStart = moment().startOf('day'),
          todayEnd = moment().endOf('day');
 
-        if (todayTrackListCache) {
+
+        if (todayTrackListCache.date && todayTrackListCache.date.dayOfYear() != todayStart.dayOfYear() ) {
+          // CLEAR todayTrackListCache
+          todayTrackListCache.date = null;
+          todayTrackListCache.data = null; 
+        }
+        if (todayTrackListCache.data) {
           deferred.resolve(todayTrackListCache);
           return deferred.promise;
         }
@@ -85,7 +94,8 @@ angular.module('musicPlayerApp')
               return deferred.reject(err);
             }
             // cache today's playlist
-            todayTrackListCache = retPlaylist;
+            todayTrackListCache.data = retPlaylist;
+            todayTrackListCache.date = todayStart;
             deferred.resolve(retPlaylist);
           });
 

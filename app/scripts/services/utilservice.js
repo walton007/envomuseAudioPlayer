@@ -88,7 +88,7 @@ angular.module('musicPlayerApp')
         stream.once('open', function(fd) {
           stream.write("TimeMs  ExactPlayTime   Track    Name   \n");
           playlist.data.forEach(function (track) {
-            var lineStr = [track.exactPlayTime, track.exactPlayTimeself.translateExactPlayTime(track.exactPlayTime), track.name, track.track, '\n'].join('  ');
+            var lineStr = [track.exactPlayTime, self.translateExactPlayTime(track.exactPlayTime), track.name, track.track, '\n'].join('  ');
             stream.write(lineStr);
           });
           

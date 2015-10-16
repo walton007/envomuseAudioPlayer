@@ -44,7 +44,7 @@ angular.module('musicPlayerApp')
           todayTrackListCache.data = null; 
         }
         if (todayTrackListCache.data) {
-          deferred.resolve(todayTrackListCache.data);
+          deferred.resolve(todayTrackListCache);
           return deferred.promise;
         }
 
@@ -111,7 +111,7 @@ angular.module('musicPlayerApp')
         .then(function (todayTrackList) {
           // just return the first one
           var now = self.getMsTimeInCurDay(moment()),
-           retTrack = _.find(todayTrackList, function (track) {
+           retTrack = _.find(todayTrackList.data, function (track) {
             return now >= Number(track.exactPlayTime) && now < Number(track.exactPlayTime) + 1000* (track.duration);
           });
           deferred.resolve(retTrack);
@@ -130,7 +130,7 @@ angular.module('musicPlayerApp')
         .then(function (todayTrackList) {
           // just return the first one
           var now = self.getMsTimeInCurDay(moment()),
-          retTrack = _.find(todayTrackList, function (track) {
+          retTrack = _.find(todayTrackList.data, function (track) {
             return track.exactPlayTime > now;
           });
           if (retTrack === null) {

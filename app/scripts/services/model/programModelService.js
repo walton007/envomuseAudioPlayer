@@ -33,6 +33,7 @@ angular.module('musicPlayerApp')
     // Public API here
     return {
       getById: function (programId, callback) {
+        $log.info('programModelService getById:', programId);
         var deferred = $q.defer();
         programStore.findOne({_id: programId}, function(err, doc) {
           if (angular.isFunction(callback)) {

@@ -38,10 +38,11 @@ angular.module('musicPlayerApp')
               programModelService.getById(program._id)
               .then(function (programRec) {
                 if (!programRec) {
+                  $log.info('aaaa');
                   if (missingPrograms.indexOf(program._id) < 0) {
                     missingPrograms.push(program);
                   };
-                };
+                }
                 callback(null);
               });
             }, function (err) {
@@ -105,7 +106,7 @@ angular.module('musicPlayerApp')
 
         programModelService.queryPrograms(yesterday, futureDay)
         .then(function (programs) {
-          $log.info('gather tracks from programs');
+          $log.info('gather tracks from programs count:', programs.length);
           var trackArr = [];
           _.each(programs, function (program) {
             var playlistInCurProgram = _.pluck(program.dayPlaylistArr, 'playlist');
